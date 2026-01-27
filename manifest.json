@@ -1,8 +1,10 @@
 {
-  "name": "Simulador CSE RSH",
-  "short_name": "Simulador CSE",
-  "start_url": "index.html",
+  "name": "Simulador Calificación Socioeconómica RSH",
+  "short_name": "Simulador RSH",
+  "description": "Simulador referencial de Calificación Socioeconómica según criterios del Registro Social de Hogares (RSH). Uso informativo y profesional.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0033A0"
+  "background_color": "#FFFFFF",
+  "theme_color": "#0033A0",
+  "id": "cl.rsh.simulador.cse"
 }
