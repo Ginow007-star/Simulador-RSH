@@ -1,84 +1,3 @@
-<!DOCTYPE html><html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador CSE – RSH (Profesional)</title>
-<style>
-:root{
-  --primario:#0033A0;      /* Azul institucional */
-  --secundario:#E6ECF5;    /* Fondo claro */
-  --acento:#F59E0B;       /* Acento */
-  --exito:#16A34A;        /* Verde */
-  --alerta:#D97706;       /* Naranjo */
-  --peligro:#DC2626;      /* Rojo */
-  --texto:#1F2937;
-}
-body{font-family:Arial,Helvetica,sans-serif;background:var(--secundario);padding:20px;color:var(--texto)}
-.card{max-width:1100px;margin:auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-h1{margin-top:0;color:var(--primario)}
-h2{margin-top:25px;border-bottom:2px solid var(--primario);color:var(--primario)}
-label{display:block;margin-top:10px;font-weight:bold;color:var(--primario)}
-input,select{width:100%;padding:8px;margin-top:4px;border:1px solid #CBD5E1;border-radius:6px}
-button{margin-top:15px;padding:10px 14px;border:none;border-radius:8px;background:var(--primario);color:#fff;font-size:15px;cursor:pointer}
-button.sec{background:#64748B;margin-left:10px}
-.member{border:1px solid #CBD5E1;padding:15px;border-radius:8px;margin-top:15px;background:#F8FAFC}
-.result{margin-top:25px;padding:18px;border-radius:8px}
-.green{background:#DCFCE7;border-left:6px solid var(--exito)}
-.yellow{background:#FEF9C3;border-left:6px solid var(--acento)}
-.orange{background:#FFEDD5;border-left:6px solid var(--alerta)}
-.red{background:#FEE2E2;border-left:6px solid var(--peligro)}
-.note{font-size:13px;color:#374151;margin-top:10px}
-.small{font-size:12px;color:#6B7280}
-</style>
-</head>
-<body>
-<div class="card">
-<h1>Simulador Profesional de Calificación Socioeconómica (CSE)</h1>
-<p class="note">Herramienta referencial según metodología RSH. No existen preguntas obligatorias.</p><h2>1. Jefe/a de hogar</h2>
-<label>Edad</label><input id="edadJefe" type="number">
-<label>Discapacidad / dependencia</label>
-<select id="condicionJefe"><option value="ninguna">No</option><option value="leve">Leve</option><option value="moderada">Moderada</option><option value="severa">Severa</option></select>
-<label>Ocupación</label>
-<select id="ocupJefe"><option value="no_trabaja">No trabaja</option><option value="trabaja">Trabaja</option><option value="estudia">Estudia</option><option value="estudia_trabaja">Estudia y trabaja</option></select>
-<label>Tipo de ingreso</label>
-<select id="tipoIngresoJefe"><option value="no_corresponde">No corresponde</option><option value="trabajo">Trabajo</option><option value="pension">Pensión</option><option value="alimentos">Pensión de alimentos</option><option value="capital">Capital</option></select>
-<label>Ingreso mensual ($)</label><input id="ingresoJefe" type="number" value="0"><h2>2. Integrantes del hogar</h2>
-<div id="members"></div>
-<button type="button" id="btnAdd">➕ Agregar integrante</button><h2>3. Evaluación de medios</h2>
-<label>Bienes raíces</label>
-<select id="bienes"><option value="0">No</option><option value="0.1">Medio</option><option value="0.2">Alto</option></select><label>Sistema de salud</label> <select id="sistemaSalud"><option value="fonasa">Fonasa</option><option value="isapre">Isapre</option></select> <label>Valor plan salud (UF)</label><input id="valorPlan" type="number" step="0.01">
-
-<label>Vehículo</label> <select id="tieneVehiculo"><option value="no">No</option><option value="si">Sí</option></select> <label>Valor vehículo ($)</label><input id="valorVehiculo" type="number">
-
-<label>Educación con copago</label> <select id="educacion"><option value="no">No</option><option value="si">Sí</option></select> <label>Valor educación ($)</label><input id="valorColegio" type="number">
-
-<button type="button" id="btnCalc">Calcular CSE estimada</button>
-
-<div id="resultado"></div>
-<div id="analisis" class="note"></div>
-</div><script>
-let memberId = 0;
-
-function crearIntegrante(){
-  memberId++;
-  const d = document.createElement('div');
-  d.className = 'member';
-  d.dataset.id = memberId;
-  d.innerHTML = `
-    <strong>Integrante</strong>
-    <button type="button" class="sec" data-remove="${memberId}">Eliminar</button>
-    <label>Edad</label><input type="number" class="edad">
-    <label>Discapacidad</label>
-    <select class="condicion"><option value="ninguna">No</option><option value="leve">Leve</option><option value="moderada">Moderada</option><option value="severa">Severa</option></select>
-    <label>Ocupación</label>
-    <select class="ocupacion"><option value="no_trabaja">No trabaja</option><option value="trabaja">Trabaja</option><option value="estudia">Estudia</option><option value="estudia_trabaja">Estudia y trabaja</option></select>
-    <label>Tipo ingreso</label>
-    <select class="tipoIngreso"><option value="no_corresponde">No corresponde</option><option value="trabajo">Trabajo</option><option value="pension">Pensión</option><option value="alimentos">Pensión de alimentos</option><option value="capital">Capital</option></select>
-    <label>Ingreso mensual ($)</label><input type="number" class="ingreso" value="0">
-  `;
-  document.getElementById('members').appendChild(d);
-}
-
 function coef(edad,cond){
   if(isNaN(edad)) return 0;
   if(edad<=5) return cond==='ninguna'?0.4:0.8;
@@ -90,78 +9,103 @@ function coef(edad,cond){
 }
 
 function calcular(){
-  const edades = [];
-  const conds = [];
+  let edades=[],conds=[];
+  let ingresoTotal = parseFloat(ingresoJefe.value)||0;
 
-  // Jefe de hogar
   if(!isNaN(parseInt(edadJefe.value))){
     edades.push(parseInt(edadJefe.value));
     conds.push(condicionJefe.value);
   }
 
-  // Integrantes
   document.querySelectorAll('.member').forEach(m=>{
-    const e = parseInt(m.querySelector('.edad').value);
+    const e=parseInt(m.querySelector('.edad').value);
     if(!isNaN(e)){
       edades.push(e);
       conds.push(m.querySelector('.condicion').value);
     }
+    ingresoTotal += parseFloat(m.querySelector('.ingreso').value)||0;
   });
 
-  const N = edades.length || 1;
-  let sumY = 0;
-  edades.forEach((e,i)=> sumY += coef(e, conds[i]));
-  const IN = Math.pow(N,0.7) + sumY;
+  const N = edades.length||1;
+  let sumY=0;
+  edades.forEach((e,i)=>sumY+=coef(e,conds[i]));
+  const IN = Math.pow(N,0.7)+sumY;
 
-  // Ingresos
-  let ingresoTotal = parseFloat(ingresoJefe.value) || 0;
-  document.querySelectorAll('.member').forEach(m=>{
-    ingresoTotal += parseFloat(m.querySelector('.ingreso').value) || 0;
-  });
+  let ingresoEq = ingresoTotal / IN;
 
-  let ingresoEquivalente = ingresoTotal / IN;
+  let alertas=[];
+  let reordenado=false;
 
-  // Evaluación de medios
-  ingresoEquivalente *= 1 + parseFloat(bienes.value || 0);
-  if(sistemaSalud.value === 'isapre' && (parseFloat(valorPlan.value)||0) >= 4) ingresoEquivalente *= 1.15;
-  if(tieneVehiculo.value === 'si' && (parseFloat(valorVehiculo.value)||0) >= 10000000) ingresoEquivalente *= 1.15;
-  if(educacion.value === 'si' && (parseFloat(valorColegio.value)||0) >= 100000) ingresoEquivalente *= 1.15;
+  if(parseFloat(bienes.value)>0){
+    ingresoEq*=1+parseFloat(bienes.value);
+    alertas.push("Bienes raíces adicionales");
+    reordenado=true;
+  }
 
-  // Tramo CSE y porcentaje representativo
-  let tramo = '';
-  let porcentaje = '';
-  let clase = '';;
-  if(ingresoEquivalente < 250000){ tramo = '0–40%'; porcentaje = '40%'; clase='green'; }
-  else if(ingresoEquivalente < 400000){ tramo = '41–60%'; porcentaje = '50%'; clase='yellow'; }
-  else if(ingresoEquivalente < 600000){ tramo = '61–80%'; porcentaje = '70%'; clase='orange'; }
-  else { tramo = '81–100%'; porcentaje = '90%'; clase='red'; }
+  if(sistemaSalud.value==='isapre'&&(parseFloat(valorPlan.value)||0)>=4){
+    ingresoEq*=1.15;
+    alertas.push("Plan de salud Isapre de alto costo");
+    reordenado=true;
+  }
 
-  resultado.innerHTML = `<div class='result ${clase}'>
+  if(tieneVehiculo.value==='si'&&(parseFloat(valorVehiculo.value)||0)>=10000000){
+    ingresoEq*=1.15;
+    alertas.push("Vehículo de alto valor comercial");
+    reordenado=true;
+  }
+
+  if(educacion.value==='si'&&(parseFloat(valorColegio.value)||0)>=100000){
+    ingresoEq*=1.15;
+    alertas.push("Educación con copago relevante");
+    reordenado=true;
+  }
+
+  let tramo='',porcentaje='',clase='';
+  if(ingresoEq<250000){tramo='0–40%';porcentaje='40%';clase='green';}
+  else if(ingresoEq<400000){tramo='41–60%';porcentaje='50%';clase='yellow';}
+  else if(ingresoEq<600000){tramo='61–80%';porcentaje='70%';clase='orange';}
+  else{tramo='81–100%';porcentaje='90%';clase='red';}
+
+  resultado.innerHTML=`
+  <div class="result ${clase}">
     <strong>Índice de Necesidades (IN):</strong> ${IN.toFixed(2)}<br>
-    <strong>Ingreso equivalente corregido:</strong> $${ingresoEquivalente.toFixed(0)}<br>
+    <strong>Ingreso equivalente corregido:</strong> $${ingresoEq.toFixed(0)}<br>
     <strong>Tramo CSE estimado:</strong> ${tramo} (percentil de referencia: ${porcentaje})
   </div>`;
 
-  analisis.innerHTML = `<strong>Análisis socioeconómico</strong><br>
-  El hogar considera ${N} integrante(s). El Índice de Necesidades se calculó como N<sup>0,7</sup> (${Math.pow(N,0.7).toFixed(2)}) más coeficientes individuales (${sumY.toFixed(2)}).<br><br>
-  El ingreso total declarado del hogar es de $${ingresoTotal.toFixed(0)}, el cual fue ajustado por el IN y por evaluación de medios, resultando en un ingreso equivalente corregido de $${ingresoEquivalente.toFixed(0)}.<br><br>
-  En función de este resultado, el hogar se ubica de manera referencial en el tramo ${tramo} de la Calificación Socioeconómica.`;
+  reordenamiento.innerHTML = reordenado ? `
+  ⚠️ <strong>Evaluación de medios aplicada</strong>
+  <ul>${alertas.map(a=>`<li>${a}</li>`).join("")}</ul>
+  Estas condiciones no generan automáticamente un cambio de tramo,
+  pero pueden dar lugar a reordenamientos administrativos en el RSH.
+  ` : '';
+
+  analisis.innerHTML = `
+  <strong>Análisis socioeconómico detallado</strong><br><br>
+  El hogar está compuesto por ${N} integrante(s). El Índice de Necesidades se calculó
+  considerando economías de escala (N<sup>0,7</sup> = ${Math.pow(N,0.7).toFixed(2)})
+  y coeficientes individuales (${sumY.toFixed(2)}), resultando en un IN de ${IN.toFixed(2)}.<br><br>
+  El ingreso total líquido declarado asciende a $${ingresoTotal.toFixed(0)}.
+  Tras el ajuste por IN y evaluación de medios, el hogar se ubica
+  de manera referencial en el tramo ${tramo} de la Calificación Socioeconómica.
+  `;
 }
 
-// EVENTOS SEGUROS
+function exportarPDF(){
+  const w=window.open('','_blank');
+  w.document.write(`<h2>Resultado Simulador CSE – RSH</h2>${resultado.innerHTML}${reordenamiento.innerHTML}${analisis.innerHTML}`);
+  w.print();
+}
 
-document.getElementById('btnAdd').addEventListener('click', crearIntegrante);
+btnAdd.addEventListener('click',crearIntegrante);
+btnCalc.addEventListener('click',calcular);
+btnPDF.addEventListener('click',exportarPDF);
 
-document.getElementById('members').addEventListener('click', e=>{
+document.getElementById('members').addEventListener('click',e=>{
   if(e.target.dataset.remove){
-    const m=document.querySelector(`.member[data-id='${e.target.dataset.remove}']`);
-    if(m) m.remove();
+    const m=document.querySelector(\`.member[data-id="\${e.target.dataset.remove}"]\`);
+    if(m)m.remove();
   }
 });
 
-document.getElementById('btnCalc').addEventListener('click', calcular);
-
-// integrante inicial
 crearIntegrante();
-</script></body>
-</html>
