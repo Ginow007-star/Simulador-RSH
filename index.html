@@ -3,299 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulador CSE – RSH (Profesional)</title>
+<title>Simulador CSE – RSH</title>
 
 <style>
 :root{
   --primario:#0033A0;
   --secundario:#E6ECF5;
-  --acento:#F59E0B;
   --exito:#16A34A;
-  --alerta:#D97706;
+  --alerta:#F59E0B;
   --peligro:#DC2626;
-  --texto:#1F2937;
 }
 
 body{
   font-family:Arial,Helvetica,sans-serif;
   background:var(--secundario);
   padding:20px;
-  color:var(--texto)
 }
 
 .card{
-  max-width:1100px;
+  max-width:900px;
   margin:auto;
   background:#fff;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.1)
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
 }
 
-h1{margin-top:0;color:var(--primario)}
-h2{margin-top:25px;border-bottom:2px solid var(--primario);color:var(--primario)}
+h1,h2{color:var(--primario)}
 
-label{
-  display:block;
-  margin-top:10px;
-  font-weight:bold;
-  color:var(--primario)
-}
-
-input,select{
-  width:100%;
-  padding:8px;
-  margin-top:4px;
-  border:1px solid #CBD5E1;
-  border-radius:6px
-}
+label{font-weight:bold;display:block;margin-top:10px}
+input,select{width:100%;padding:8px;margin-top:4px}
 
 button{
   margin-top:15px;
-  padding:10px 14px;
-  border:none;
-  border-radius:8px;
+  padding:10px;
   background:var(--primario);
   color:#fff;
-  font-size:15px;
-  cursor:pointer
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-button.sec{background:#64748B;margin-left:10px}
-button.pdf{background:#0F766E;margin-left:10px}
-
 .member{
-  border:1px solid #CBD5E1;
-  padding:15px;
-  border-radius:8px;
-  margin-top:15px;
-  background:#F8FAFC
+  border:1px solid #ccc;
+  padding:10px;
+  margin-top:10px;
+  border-radius:6px;
 }
 
 .result{
-  margin-top:25px;
-  padding:18px;
-  border-radius:8px
+  margin-top:20px;
+  padding:15px;
+  border-radius:6px;
 }
 
-.green{background:#DCFCE7;border-left:6px solid var(--exito)}
-.yellow{background:#FEF9C3;border-left:6px solid var(--acento)}
-.orange{background:#FFEDD5;border-left:6px solid var(--alerta)}
-.red{background:#FEE2E2;border-left:6px solid var(--peligro)}
-
-.note{font-size:13px;color:#374151;margin-top:10px}
-.small{font-size:12px;color:#6B7280}
+.green{background:#DCFCE7;border-left:5px solid var(--exito)}
+.yellow{background:#FEF9C3;border-left:5px solid var(--alerta)}
+.orange{background:#FFEDD5;border-left:5px solid var(--alerta)}
+.red{background:#FEE2E2;border-left:5px solid var(--peligro)}
 </style>
 </head>
 
 <body>
 <div class="card" id="contenido">
 
-<h1>Simulador Profesional de Calificación Socioeconómica (CSE)</h1>
-<p class="note">
-Herramienta referencial basada en criterios públicos del Registro Social de Hogares (RSH).  
-No reemplaza evaluación oficial ni resolución administrativa.
-</p>
+<h1>Simulador Calificación Socioeconómica (RSH)</h1>
 
-<h2>1. Jefe/a de hogar</h2>
-
+<h2>Jefe/a de hogar</h2>
 <label>Edad</label>
 <input id="edadJefe" type="number">
-
-<label>Discapacidad / dependencia</label>
-<select id="condicionJefe">
-  <option value="ninguna">No</option>
-  <option value="leve">Leve</option>
-  <option value="moderada">Moderada</option>
-  <option value="severa">Severa</option>
-</select>
-
-<label>Ocupación</label>
-<select id="ocupJefe">
-  <option value="no_trabaja">Inactivo / No trabaja</option>
-  <option value="cesante">Cesante</option>
-  <option value="dependiente">Trabajador dependiente</option>
-  <option value="independiente">Trabajador independiente / honorarios</option>
-  <option value="estudia">Estudiante</option>
-  <option value="estudia_trabaja">Estudia y trabaja</option>
-</select>
 
 <label>Ingreso mensual líquido ($)</label>
 <input id="ingresoJefe" type="number" value="0">
 
-<h2>2. Integrantes del hogar</h2>
+<h2>Integrantes</h2>
 <div id="members"></div>
-<button type="button" id="btnAdd">➕ Agregar integrante</button>
+<button onclick="agregarIntegrante()">➕ Agregar integrante</button>
 
-<h2>3. Evaluación de medios (reordenamiento)</h2>
+<h2>Evaluación de medios</h2>
 
-<label>Bienes raíces adicionales</label>
-<select id="bienes">
-  <option value="0">No</option>
-  <option value="1">Sí</option>
-</select>
-
-<label>Sistema de salud</label>
-<select id="sistemaSalud">
-  <option value="fonasa">Fonasa</option>
-  <option value="isapre">Isapre</option>
-</select>
-
-<label>Valor plan Isapre (UF)</label>
-<input id="valorPlan" type="number" step="0.01">
-
-<label>Vehículo</label>
-<select id="tieneVehiculo">
+<label>Vehículo de alto valor (≥ $25.000.000)</label>
+<select id="vehiculo">
   <option value="no">No</option>
   <option value="si">Sí</option>
 </select>
 
-<label>Valor comercial vehículo ($)</label>
-<input id="valorVehiculo" type="number">
-
-<label>Educación con copago</label>
-<select id="educacion">
-  <option value="no">No</option>
-  <option value="si">Sí</option>
-</select>
-
-<label>Copago mensual educación ($)</label>
-<input id="valorColegio" type="number">
-
-<button type="button" id="btnCalc">Calcular CSE estimada</button>
-<button type="button" class="pdf" onclick="exportarPDF()">📄 Exportar a PDF</button>
+<button onclick="calcular()">Calcular</button>
+<button onclick="exportarPDF()">Exportar PDF</button>
 
 <div id="resultado"></div>
-<div id="analisis" class="note"></div>
+<div id="analisis"></div>
 
 </div>
 
 <script>
-let memberId=0;
+let contador = 0;
 
-function crearIntegrante(){
-  memberId++;
-  const d=document.createElement('div');
-  d.className='member';
-  d.dataset.id=memberId;
-  d.innerHTML=`
-    <strong>Integrante</strong>
-    <button type="button" class="sec" data-remove="${memberId}">Eliminar</button>
-
-    <label>Edad</label>
+function agregarIntegrante(){
+  contador++;
+  const d = document.createElement("div");
+  d.className = "member";
+  d.innerHTML = `
+    <label>Edad integrante</label>
     <input type="number" class="edad">
-
-    <label>Discapacidad</label>
-    <select class="condicion">
-      <option value="ninguna">No</option>
-      <option value="leve">Leve</option>
-      <option value="moderada">Moderada</option>
-      <option value="severa">Severa</option>
-    </select>
-
-    <label>Ingreso mensual líquido ($)</label>
+    <label>Ingreso mensual ($)</label>
     <input type="number" class="ingreso" value="0">
   `;
-  document.getElementById('members').appendChild(d);
-}
-
-/* Coeficientes de necesidades (aprox. RSH) */
-function coef(edad,cond){
-  if(isNaN(edad)) return 0;
-  let base=0;
-  if(edad<=5) base=0.4;
-  else if(edad<=14) base=0.3;
-  else if(edad<=17) base=0.09;
-  else if(edad<=59) base=0;
-  else if(edad<=74) base=0.61;
-  else base=0.75;
-
-  if(cond==='leve') base+=0.34;
-  if(cond==='moderada') base+=0.52;
-  if(cond==='severa') base+=0.64;
-
-  return base;
+  document.getElementById("members").appendChild(d);
 }
 
 function calcular(){
-  let edades=[],conds=[];
-  let ingresoTotal=0;
+  let edades = [];
+  let ingresoTotal = Number(ingresoJefe.value)||0;
 
-  if(!isNaN(parseInt(edadJefe.value))){
-    edades.push(parseInt(edadJefe.value));
-    conds.push(condicionJefe.value);
-  }
-  ingresoTotal+=parseFloat(ingresoJefe.value)||0;
+  if(edadJefe.value) edades.push(Number(edadJefe.value));
 
-  document.querySelectorAll('.member').forEach(m=>{
-    const e=parseInt(m.querySelector('.edad').value);
-    if(!isNaN(e)){
-      edades.push(e);
-      conds.push(m.querySelector('.condicion').value);
-    }
-    ingresoTotal+=parseFloat(m.querySelector('.ingreso').value)||0;
+  document.querySelectorAll(".member").forEach(m=>{
+    const e = m.querySelector(".edad").value;
+    const i = m.querySelector(".ingreso").value;
+    if(e) edades.push(Number(e));
+    ingresoTotal += Number(i)||0;
   });
 
-  const N=edades.length||1;
-  let sumY=0;
-  edades.forEach((e,i)=>sumY+=coef(e,conds[i]));
-  const IN=Math.pow(N,0.7)+sumY;
+  const N = edades.length || 1;
+  const IN = Math.pow(N,0.7);
 
-  let ingresoEq=ingresoTotal/IN;
+  let ingresoEq = ingresoTotal / IN;
 
-  let alertas=[];
-  if(bienes.value==='1') alertas.push('Bienes raíces adicionales');
-  if(sistemaSalud.value==='isapre' && valorPlan.value>=4) alertas.push('Isapre alto costo');
-  if(tieneVehiculo.value==='si' && valorVehiculo.value>=25000000) alertas.push('Vehículo alto valor');
-  if(educacion.value==='si' && valorColegio.value>=150000) alertas.push('Educación con copago alto');
+  if(vehiculo.value==="si") ingresoEq *= 1.15;
 
-  if(alertas.length>0) ingresoEq*=1.15;
+  let tramo="",clase="";
+  if(ingresoEq<250000){tramo="0–40%";clase="green";}
+  else if(ingresoEq<400000){tramo="41–60%";clase="yellow";}
+  else if(ingresoEq<600000){tramo="61–80%";clase="orange";}
+  else{tramo="81–100%";clase="red";}
 
-  let tramo='',clase='';
-  if(ingresoEq<250000){tramo='0–40%';clase='green'}
-  else if(ingresoEq<400000){tramo='41–60%';clase='yellow'}
-  else if(ingresoEq<600000){tramo='61–80%';clase='orange'}
-  else{tramo='81–100%';clase='red'}
-
-  resultado.innerHTML=`
-  <div class="result ${clase}">
-    <strong>Índice de Necesidades (IN):</strong> ${IN.toFixed(2)}<br>
-    <strong>Ingreso total hogar:</strong> $${ingresoTotal.toFixed(0)}<br>
-    <strong>Ingreso equivalente corregido:</strong> $${ingresoEq.toFixed(0)}<br>
-    <strong>Tramo CSE estimado:</strong> ${tramo}
-  </div>`;
-
-  analisis.innerHTML=`
-  <strong>Análisis socioeconómico</strong><br>
-  Hogar compuesto por ${N} integrante(s).  
-  El Índice de Necesidades se calculó considerando economías de escala (N<sup>0,7</sup>) y coeficientes etarios y de discapacidad.<br><br>
-  El ingreso líquido total del hogar asciende a $${ingresoTotal.toFixed(0)}.  
-  Tras el ajuste por IN${alertas.length>0?' y evaluación de medios ('+alertas.join(', ')+')':''},
-  el hogar se ubica de manera referencial en el tramo <strong>${tramo}</strong> de la CSE.
-  `;
-}
-
-function exportarPDF(){
-  const v=window.open('','','width=800,height=600');
-  v.document.write('<html><head><title>Resultado CSE</title></head><body>');
-  v.document.write(document.getElementById('contenido').innerHTML);
-  v.document.write('</body></html>');
-  v.document.close();
-  v.print();
-}
-
-document.getElementById('btnAdd').addEventListener('click',crearIntegrante);
-document.getElementById('btnCalc').addEventListener('click',calcular);
-
-document.getElementById('members').addEventListener('click',e=>{
-  if(e.target.dataset.remove){
-    const m=document.querySelector(".member[data-id='"+e.target.dataset.remove+"']");
-    if(m) m.remove();
-  }
-});
-
-crearIntegrante();
-</script>
-
-</body>
-</html>
+  resultado.innerHTML = `
+    <div class="result ${clase}">
+      <strong>Ingreso equivalente:</strong> $${ingresoEq.toFixed(0)}<br>
+      <
